@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        4
+Release:        5
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
