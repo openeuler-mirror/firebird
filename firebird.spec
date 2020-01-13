@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        5
+Release:        6
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -19,7 +19,7 @@ Patch0005:      cloop-honour-build-flags.patch
 Patch0006:      a4cb621bf55ef2101e22b1e7da5c458a1e0cc2ab.patch
 Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
 
-BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libtermcap-devel libicu-devel
+BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
 
 Requires(post): systemd-units
@@ -184,6 +184,12 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
-* Mon Dec 2 2019 lihao <lihao129@huawei.com> - 3.0.3.32900-4
+* Mon Jan 13 2020 openEuler Buildteam <buildteam@openeuler.org> - 3.0.3.32900-6
+- Type:bugfix
+- Id:NA
+- SUG:NA
+- DESC:remove the libtermcap-devel in buildrequires
+
+* Mon Dec 2 2019 lihao <lihao129@huawei.com> - 3.0.3.32900-5
 - Package Init
 
