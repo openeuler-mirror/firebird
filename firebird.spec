@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        6
+Release:        7
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -184,6 +184,9 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Tue Aug 18 2020 senlin<xiasenlin1@huawei.com> - 3.0.3.32900-7
+- add release for update
+
 * Mon Jan 13 2020 openEuler Buildteam <buildteam@openeuler.org> - 3.0.3.32900-6
 - Type:bugfix
 - Id:NA
