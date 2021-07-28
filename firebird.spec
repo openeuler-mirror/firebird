@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        7
+Release:        8
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -113,7 +113,7 @@ cp .%{_datadir}/firebird/misc/firebird-superserver.service .%{_unitdir}/firebird
 %pre
 
 getent group firebird || /usr/sbin/groupadd -r firebird
-getent passwd firebird >/dev/null || /usr/sbin/useradd -d / -g firebird -s /bin/nologin -r firebird
+getent passwd firebird >/dev/null || /usr/sbin/useradd -d / -g firebird -s /sbin/nologin -r firebird
 
 
 oldLine=$(grep "^gds_db" /etc/services)
@@ -184,6 +184,9 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Tue Jul 27 2021 bzhaoop<bzhaojyathousandy@gmail.com> - 3.0.3.32900-8
+- Fix login shell to /sbin/nologin
+
 * Tue Aug 18 2020 senlin<xiasenlin1@huawei.com> - 3.0.3.32900-7
 - add release for update
 
