@@ -1,8 +1,8 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        8
+Release:        9
 Summary:        SQL relational database management system
-License:        Interbase
+License:        Interbase-1.0
 URL:            http://www.firebirdsql.org/
 
 Source0:        https://github.com/FirebirdSQL/firebird/releases/download/R3_0_3/Firebird-3.0.3.32900-0.tar.bz2
@@ -18,6 +18,7 @@ Patch0004:      no-copy-from-icu.patch
 Patch0005:      cloop-honour-build-flags.patch
 Patch0006:      a4cb621bf55ef2101e22b1e7da5c458a1e0cc2ab.patch
 Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
+Patch0008:	Fix-connect-linking-to-web-database-by-modifying-the-default-conf.patch
 
 BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
@@ -184,6 +185,9 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Mon Nov 22 2021 xu_ping <xuping33@huawei.com> - 3.0.3.32900-9
+- Fix connect linking to web database by modifying the firebird.conf items to make client and server compatible
+
 * Tue Aug 03 2021 panchenbo <panchenbo@uniontech.com> - 3.0.3.32900-8
 - Fix login shell to /sbin/nologin
 
