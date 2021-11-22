@@ -1,0 +1,25 @@
+diff --git a/builds/install/misc/firebird.conf.in b/builds/install/misc/firebird.conf.in
+index 05cd0c7..8c3d9ef 100644
+--- a/builds/install/misc/firebird.conf.in
++++ b/builds/install/misc/firebird.conf.in
+@@ -406,10 +406,12 @@
+ # Per-database configurable.
+ #
+ #AuthServer = Srp
++AuthServer = Legacy_Auth
+ #
+ # Per-connection and per-database configurable.
+ #
+ #AuthClient = Srp, Win_Sspi, Legacy_Auth
++AuthClient = Legacy_Auth
+ #
+ # If you need to use server plugins that do not provide encryption key (both Legacy_Auth
+ # & Win_Sspi) you should also turn off required encryption on the wire with WireCrypt
+@@ -600,6 +602,7 @@
+ # Type: string (predefined values)
+ #
+ #WireCrypt = Enabled (for client) / Required (for server)
++WireCrypt = Disabled
+ 
+ #
+ # Should connection over the wire be compressed?
