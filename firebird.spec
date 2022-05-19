@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        9
+Release:        10
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -19,6 +19,7 @@ Patch0005:      cloop-honour-build-flags.patch
 Patch0006:      a4cb621bf55ef2101e22b1e7da5c458a1e0cc2ab.patch
 Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
 Patch0008:      fix-failed-to-parse-pid-from-pid-file.patch
+Patch0009:		0001-firebird-3.0.3.32900-add-loongarch64-support.patch
 
 BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
@@ -204,6 +205,9 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Mon May 16 2022 Huang Yang <huangyang@loongson.cn> - 3.0.3.32900-10
+- add loongarch64 support
+
 * Mon Mar 7 2022 yaoxin <yaoxin30@huawei.com> - 3.0.3.32900-9
 - Fix failed to parse pid from pid file
 

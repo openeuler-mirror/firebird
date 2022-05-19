@@ -1,0 +1,82 @@
+From a80c8e26323ad8113c719dcb45ea57bcfca93114 Mon Sep 17 00:00:00 2001
+From: Huang Yang <huangyang@loongson.cn>
+Date: Mon, 16 May 2022 11:27:24 +0000
+Subject: [PATCH] firebied 3.0.3.32900 add loongarch64 support
+
+---
+ builds/posix/prefix.linux_loongarch64 | 26 ++++++++++++++++++++++++++
+ configure.ac                          | 12 ++++++++++++
+ src/jrd/inf_pub.h                     |  1 +
+ 3 files changed, 39 insertions(+)
+ create mode 100644 builds/posix/prefix.linux_loongarch64
+
+diff --git a/builds/posix/prefix.linux_loongarch64 b/builds/posix/prefix.linux_loongarch64
+new file mode 100644
+index 0000000..7a35614
+--- /dev/null
++++ b/builds/posix/prefix.linux_loongarch64
+@@ -0,0 +1,26 @@
++# The contents of this file are subject to the Interbase Public
++# License Version 1.0 (the "License"); you may not use this file
++# except in compliance with the License. You may obtain a copy
++# of the License at http://www.Inprise.com/IPL.html
++#
++# Software distributed under the License is distributed on an
++# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
++# or implied. See the License for the specific language governing
++# rights and limitations under the License.
++#
++# The Original Code was created by Inprise Corporation
++# and its predecessors. Portions created by Inprise Corporation are
++# Copyright (C) Inprise Corporation.
++#
++# All Rights Reserved.
++# Contributor(s): ______________________________________.
++# Start of file prefix.linux:  $(VERSION)  $(PLATFORM)
++#
++# Richard W.M. Jones, Red Hat Inc.
++
++WARN_FLAGS=-Wall -Wno-switch -Wno-parentheses -Wno-unknown-pragmas -Wno-unused-variable -Wno-invalid-offsetof -Wno-narrowing -Wno-unused-local-typedefs
++
++PROD_FLAGS=-O3 -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -fsigned-char -fmessage-length=0
++DEV_FLAGS=-ggdb -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -Wall -fsigned-char -fmessage-length=0 $(WARN_FLAGS)
++
++CXXFLAGS := $(CXXFLAGS) -std=c++11
+diff --git a/configure.ac b/configure.ac
+index b74a540..93d93ed 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -262,6 +262,18 @@ dnl CPU_TYPE=ppc64
+     STD_ICU=true
+     libdir=/usr/lib64
+     ;;
++  
++  loongarch64*-*-linux*)
++    MAKEFILE_PREFIX=linux_loongarch64
++    INSTALL_PREFIX=linux
++    PLATFORM=LINUX
++    AC_DEFINE(LINUX, 1, [Define this if OS is Linux])
++    EDITLINE_FLG=Y
++    SHRLIB_EXT=so
++    STD_EDITLINE=true
++    STD_ICU=true
++    libdir=/usr/lib64
++    ;;
+ 
+   powerpc64le-*-linux*)                           
+     MAKEFILE_PREFIX=linux_powerpc64el
+diff --git a/src/jrd/inf_pub.h b/src/jrd/inf_pub.h
+index b45802b..9aea247 100644
+--- a/src/jrd/inf_pub.h
++++ b/src/jrd/inf_pub.h
+@@ -246,6 +246,7 @@ enum  info_db_implementations
+ 	isc_info_db_impl_linux_ppc64 = 86,
+ 	isc_info_db_impl_linux_m68k = 87,
+         isc_info_db_impl_linux_riscv64 = 88,
++        isc_info_db_impl_linux_loongarch64 = 89,
+ 
+ 	isc_info_db_impl_last_value   // Leave this LAST!
+ };
+-- 
+2.33.0
+
