@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        7
+Release:        8
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -21,6 +21,7 @@ Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
 
 BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
+BuildRequires:  chrpath
 
 Requires(post): systemd-units
 Requires(preun):systemd-units
@@ -84,6 +85,7 @@ cd gen
 make -f Makefile.install buildRoot
 chmod -R u+w buildroot%{_docdir}/firebird
 
+
 %install
 chmod u+rw,a+rx gen/buildroot/usr/include/firebird/firebird/impl
 cp -r gen/buildroot/* ${RPM_BUILD_ROOT}/
@@ -109,6 +111,20 @@ install -d .%{_tmpfilesdir} && cp %{SOURCE2} .%{_tmpfilesdir}/
 install -d .%{_unitdir}
 cp .%{_datadir}/firebird/misc/firebird-superserver.service .%{_unitdir}/firebird-superserver.service
 
+# remove rpath info
+for ff in $(find %{buildroot}/ -executable -type f -exec file '{}' ';' | grep "\<ELF\>" | awk -F ':' '{print $1}')
+do
+        if [ ! -u "$ff" ]; then
+                if [ -w "$ff" ]; then
+                        chrpath -d $ff
+                fi
+        fi
+done
+
+# add rpath path /usr/lib/systemd in ld.so.cond.d
+mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
+echo "/usr/lib/systemd" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
+
 
 %pre
 
@@ -123,11 +139,13 @@ fi
 
 
 %post
+/sbin/ldconfig
 systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %systemd_post firebird-superserver.service
 
 
 %postun
+/sbin/ldconfig
 %systemd_postun_with_restart firebird-superserver.service
 
 
@@ -161,6 +179,7 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %dir %{_localstatedir}/log/firebird
 %config(noreplace) %attr(0664,firebird,firebird)  %{_localstatedir}/log/firebird/firebird.log
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/logrotate.d/firebird
+%config(noreplace) %{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
 
 %defattr(0755,root,root,0755)
 %{_unitdir}/firebird-superserver.service
@@ -184,6 +203,9 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Fri Sep 10 2021 bzhaoop <bzhaojyathousandy@gmail.com> - 3.0.3.32900-8
+- Del rpath in some binaries for firebird.
+
 * Thu Feb 25 2021 huanghaitao <huanghaitao8@huawei.com> - 3.0.3.32900-7
 - Fix login shell to /sbin/nologin
 
