@@ -1,6 +1,6 @@
 Name:           firebird
 Version:        3.0.3.32900
-Release:        9
+Release:        10
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -95,7 +95,7 @@ cp -v gen/install/misc/*.pc ${RPM_BUILD_ROOT}%{_libdir}/pkgconfig/
 
 cd ${RPM_BUILD_ROOT}
 rm -vf .%{_sbindir}/*.sh && mv -v .%{_sbindir}/fb_config .%{_libdir}/
-install -pm 0755 %{SOURCE2} %{buildroot}%{_sbindir}/fb_config
+install -pm 0755 %{SOURCE3} %{buildroot}%{_sbindir}/fb_config
 rm -vf .%{_includedir}/firebird/perf.h .%{_includedir}/*.h .%{_libdir}/libicu*.so
 chmod -R u+w .%{_docdir}/firebird
 rm -vf .%{_datadir}/firebird/misc/{firebird.init.*,firebird.xinetd,rc.config.firebird}
@@ -204,6 +204,9 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Tue Aug 30 2022 dillon chen<dillon.chen@gmail.com> - 3.0.3.32900-10
+- put correct source as /usr/sbin/fb_config
+
 * Mon Mar 7 2022 yaoxin <yaoxin30@huawei.com> - 3.0.3.32900-9
 - Fix failed to parse pid from pid file
 
