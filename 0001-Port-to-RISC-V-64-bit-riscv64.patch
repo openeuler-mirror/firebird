@@ -47,7 +47,7 @@ diff -urN Firebird-3.0.3.32900-0.old/configure.ac Firebird-3.0.3.32900-0/configu
 +    libdir=/usr/lib64
 +    ;;
 +
-   powerpc64le-*-linux*)                           
+   powerpc64le-*-linux*)
      MAKEFILE_PREFIX=linux_powerpc64el
      INSTALL_PREFIX=linux
 diff -urN Firebird-3.0.3.32900-0.old/src/common/classes/DbImplementation.cpp Firebird-3.0.3.32900-0/src/common/classes/DbImplementation.cpp
