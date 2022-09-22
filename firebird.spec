@@ -20,7 +20,6 @@ Patch0003:      honour-buildflags.patch
 Patch0004:      no-copy-from-icu.patch
 Patch0005:      cloop-honour-build-flags.patch
 Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
-Patch0008:      fix-failed-to-parse-pid-from-pid-file.patch
 
 BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
