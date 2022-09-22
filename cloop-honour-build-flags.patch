@@ -6,8 +6,8 @@ Forwarded: no
 +++ b/extern/cloop/Makefile
 @@ -6,7 +6,7 @@ TARGET	:= release
  
- CC	:= gcc
- CXX	:= g++
+ CC	:= $(CC)
+ CXX	:= $(CXX)
 -LD	:= $(CXX)
 +LD	:= $(CXX) $(LDFLAGS)
  

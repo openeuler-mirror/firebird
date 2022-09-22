@@ -1,11 +1,14 @@
+%global ver 3.0.10
+%global rev 33601
+
 Name:           firebird
-Version:        3.0.3.32900
-Release:        9
+Version:        %{ver}.%{rev}
+Release:        1
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
 
-Source0:        https://github.com/FirebirdSQL/firebird/releases/download/R3_0_3/Firebird-3.0.3.32900-0.tar.bz2
+Source0:        https://github.com/FirebirdSQL/firebird/releases/download/v%{ver}/Firebird-%{ver}.%{rev}-0.tar.bz2
 Source1:        firebird-logrotate
 Source2:        firebird.conf
 Source3:        fb_config
@@ -16,7 +19,6 @@ Patch0002:      obsolete-syslogd.target.patch
 Patch0003:      honour-buildflags.patch
 Patch0004:      no-copy-from-icu.patch
 Patch0005:      cloop-honour-build-flags.patch
-Patch0006:      a4cb621bf55ef2101e22b1e7da5c458a1e0cc2ab.patch
 Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
 Patch0008:      fix-failed-to-parse-pid-from-pid-file.patch
 
@@ -65,7 +67,7 @@ Obsoletes:      firebird-doc < %{version}-%{release}
 Documentation for Firebird SQL server.
 
 %prep
-%autosetup -n Firebird-3.0.3.32900-0 -p1
+%autosetup -n Firebird-%{ver}.%{rev}-0 -p1
 
 %build
 export CFLAGS="%{optflags} -fno-strict-aliasing"
@@ -95,7 +97,7 @@ cp -v gen/install/misc/*.pc ${RPM_BUILD_ROOT}%{_libdir}/pkgconfig/
 
 cd ${RPM_BUILD_ROOT}
 rm -vf .%{_sbindir}/*.sh && mv -v .%{_sbindir}/fb_config .%{_libdir}/
-install -pm 0755 %{SOURCE2} %{buildroot}%{_sbindir}/fb_config
+install -pm 0755 %{SOURCE3} %{buildroot}%{_sbindir}/fb_config
 rm -vf .%{_includedir}/firebird/perf.h .%{_includedir}/*.h .%{_libdir}/libicu*.so
 chmod -R u+w .%{_docdir}/firebird
 rm -vf .%{_datadir}/firebird/misc/{firebird.init.*,firebird.xinetd,rc.config.firebird}
@@ -204,6 +206,12 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Thu Sep 1 2022 Funda Wang <fundawang@yeah.net> - 3.0.10.33601-1
+* New version 3.0.10
+
+* Tue Aug 30 2022 dillon chen<dillon.chen@gmail.com> - 3.0.3.32900-10
+- put correct source as /usr/sbin/fb_config
+
 * Mon Mar 7 2022 yaoxin <yaoxin30@huawei.com> - 3.0.3.32900-9
 - Fix failed to parse pid from pid file
 
