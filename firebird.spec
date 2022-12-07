@@ -21,9 +21,9 @@ Patch0004:      no-copy-from-icu.patch
 Patch0005:      cloop-honour-build-flags.patch
 Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
 
-BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
+BuildRequires:  autoconf automake libtommath-devel libtool make ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
-BuildRequires:  chrpath
+BuildRequires:  chrpath gcc_secure
 
 Requires(post): systemd-units
 Requires(preun):systemd-units
