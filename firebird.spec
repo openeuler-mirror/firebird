@@ -1,5 +1,5 @@
-%global ver 3.0.10
-%global rev 33601
+%global ver 4.0.2
+%global rev 2816
 
 Name:           firebird
 Version:        %{ver}.%{rev}
@@ -8,22 +8,26 @@ Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
 
-Source0:        https://github.com/FirebirdSQL/firebird/releases/download/v%{ver}/Firebird-%{ver}.%{rev}-0.tar.bz2
+Source0:        https://github.com/FirebirdSQL/firebird/releases/download/v%{ver}/Firebird-%{ver}.%{rev}-0.tar.xz
+
 Source1:        firebird-logrotate
-Source2:        firebird.conf
+Source2:        firebird.service
 Source3:        fb_config
 
 Patch0000:      add-pkgconfig-files.patch
-Patch0001:      Provide-sized-global-delete-operators-when-compiled.patch
-Patch0002:      obsolete-syslogd.target.patch
-Patch0003:      honour-buildflags.patch
-Patch0004:      no-copy-from-icu.patch
-Patch0005:      cloop-honour-build-flags.patch
-Patch0007:      0001-Port-to-RISC-V-64-bit-riscv64.patch
+Patch0001:      no-copy-from-icu.patch
+Patch0002:      cloop-honour-build-flags.patch
+
+Patch0003:      c++17.patch
+Patch0004:      noexcept.patch
+Patch0005:      autoconf.patch
+Patch0006:      btyacc-honour-build-flags.patch
+Patch0007:      firebird-configure-c99.patch
+#Patch0008:      0001-Port-to-RISC-V-64-bit-riscv64.patch
 
 BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
-BuildRequires:  chrpath
+BuildRequires:  chrpath libtomcrypt-devel sed make unzip
 
 Requires(post): systemd-units
 Requires(preun):systemd-units
@@ -72,19 +76,28 @@ Documentation for Firebird SQL server.
 export CFLAGS="%{optflags} -fno-strict-aliasing"
 export CXXFLAGS="${CFLAGS} -fno-delete-null-pointer-checks"
 NOCONFIGURE=1 ./autogen.sh
-%configure --prefix=%{_prefix}  --disable-binreloc --with-system-editline --with-fbbin=%{_bindir} \
-    --with-fbsbin=%{_sbindir} --with-fbconf=%{_sysconfdir}/firebird --with-fblib=%{_libdir} \
-    --with-fbinclude=%{_includedir}/firebird --with-fbdoc=%{_defaultdocdir}/firebird \
-    --with-fbudf=%{_libdir}/firebird/udf --with-fbsample=%{_defaultdocdir}/firebird/sample \
-    --with-fbsample-db=%{_localstatedir}/lib/firebird/data/ --with-fbhelp=%{_localstatedir}/lib/firebird/system/ \
-    --with-fbintl=%{_libdir}/firebird/intl --with-fbmisc=%{_datadir}/firebird/misc \
-    --with-fbsecure-db=%{_localstatedir}/lib/firebird/secdb/ --with-fbmsg=%{_localstatedir}/lib/firebird/system/ \
-    --with-fblog=%{_localstatedir}/log/firebird --with-fbglock=%{_var}/run/firebird \
-    --with-fbplugins=%{_libdir}/firebird/plugins
+%configure --disable-rpath --prefix=%{_prefix}  --with-system-editline \
+    --with-fbbin=%{_bindir}  --with-fbsbin=%{_sbindir} \
+    --with-fbconf=%{_sysconfdir}/firebird \
+    --with-fblib=%{_libdir} --with-fbinclude=%{_includedir}/firebird \
+    --with-fbdoc=%{_defaultdocdir}/firebird \
+    --with-fbudf=%{_libdir}/firebird/udf \
+    --with-fbsample=%{_defaultdocdir}/firebird/sample \
+    --with-fbsample-db=%{_localstatedir}/lib/firebird/data/ \
+    --with-fbhelp=%{_localstatedir}/lib/firebird/system/ \
+    --with-fbintl=%{_libdir}/firebird/intl \
+    --with-fbmisc=%{_datadir}/firebird/misc \
+    --with-fbsecure-db=%{_localstatedir}/lib/firebird/secdb/ \
+    --with-fbmsg=%{_localstatedir}/lib/firebird/system/ \
+    --with-fblog=%{_localstatedir}/log/firebird \
+    --with-fbglock=%{_var}/run/firebird \
+    --with-fbplugins=%{_libdir}/firebird/plugins \
+    --with-fbtzdata=%{_localstatedir}/lib/firebird/tzdata
 
 %make_build
 cd gen
-make -f Makefile.install buildRoot
+sed -i '/linkFiles "/d' ./install/makeInstallImage.sh
+./install/makeInstallImage.sh
 chmod -R u+w buildroot%{_docdir}/firebird
 
 
@@ -100,7 +113,7 @@ install -pm 0755 %{SOURCE3} %{buildroot}%{_sbindir}/fb_config
 rm -vf .%{_includedir}/firebird/perf.h .%{_includedir}/*.h .%{_libdir}/libicu*.so
 chmod -R u+w .%{_docdir}/firebird
 rm -vf .%{_datadir}/firebird/misc/{firebird.init.*,firebird.xinetd,rc.config.firebird}
-mv -v .%{_sysconfdir}/firebird/{README,WhatsNew} .%{_docdir}/firebird/
+mv -v .%{_sysconfdir}/firebird/{README.md,CHANGELOG.md} .%{_docdir}/firebird/
 mv -v .%{_sysconfdir}/firebird/{IDPLicense,IPLicense}.txt .%{_docdir}/firebird/
 mv -v .%{_bindir}/gstat{,-fb} && mv -v .%{_bindir}/isql{,-fb}
 
@@ -108,10 +121,9 @@ install -d .%{_localstatedir}/log/firebird .%{_sysconfdir}/logrotate.d
 echo 1 > .%{_localstatedir}/log/firebird/firebird.log
 sed "s@firebird.log@%{_localstatedir}/log/firebird/firebird.log@g" %{SOURCE1} > .%{_sysconfdir}/logrotate.d/firebird
 
-install -d .%{_tmpfilesdir} && cp %{SOURCE2} .%{_tmpfilesdir}/
 
 install -d .%{_unitdir}
-cp .%{_datadir}/firebird/misc/firebird-superserver.service .%{_unitdir}/firebird-superserver.service
+cp -f %{SOURCE2} .%{_unitdir}/%{name}.service
 
 # remove rpath info
 for ff in $(find %{buildroot}/ -executable -type f -exec file '{}' ';' | grep "\<ELF\>" | awk -F ':' '{print $1}')
@@ -142,17 +154,16 @@ fi
 
 %post
 /sbin/ldconfig
-systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
-%systemd_post firebird-superserver.service
+%systemd_post firebird.service
 
 
 %postun
 /sbin/ldconfig
-%systemd_postun_with_restart firebird-superserver.service
+%systemd_postun_with_restart firebird.service
 
 
 %preun
-%systemd_preun firebird-superserver.service
+%systemd_preun firebird.service
 
 
 %files
@@ -172,19 +183,20 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %dir %attr(0700,firebird,firebird) %{_localstatedir}/lib/firebird/secdb
 %dir %attr(0700,firebird,firebird) %{_localstatedir}/lib/firebird/data
 %dir %attr(0755,firebird,firebird) %{_localstatedir}/lib/firebird/system
-%attr(0600,firebird,firebird) %config(noreplace) %{_localstatedir}/lib/firebird/secdb/security3.fdb
+%dir %attr(0755,firebird,firebird) %{_localstatedir}/lib/firebird/tzdata
+%attr(0600,firebird,firebird) %config(noreplace) %{_localstatedir}/lib/firebird/secdb/security4.fdb
 %attr(0644,firebird,firebird) %{_localstatedir}/lib/firebird/system/help.fdb
 %attr(0644,firebird,firebird) %{_localstatedir}/lib/firebird/system/firebird.msg
+%attr(0644,firebird,firebird) %{_localstatedir}/lib/firebird/tzdata/*.res
 %ghost %dir %attr(0775,firebird,firebird) %{_var}/run/firebird
 %ghost %attr(0644,firebird,firebird) %{_var}/run/firebird/fb_guard
-%attr(0644,root,root) %{_tmpfilesdir}/firebird.conf
 %dir %{_localstatedir}/log/firebird
 %config(noreplace) %attr(0664,firebird,firebird)  %{_localstatedir}/log/firebird/firebird.log
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/logrotate.d/firebird
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
+%attr(0644,root,root) %{_unitdir}/firebird.service
 
 %defattr(0755,root,root,0755)
-%{_unitdir}/firebird-superserver.service
 %{_libdir}/libfbclient.so.*
 %{_libdir}/libib_util.so
 %{_bindir}/*
@@ -205,8 +217,11 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Thu Mar 2 2023 dillon chen <dillon.chen@gmail.com> - 4.0.2.2816-1
+- Update to 4.0.2 
+
 * Thu Sep 1 2022 Funda Wang <fundawang@yeah.net> - 3.0.10.33601-1
-* New version 3.0.10
+- New version 3.0.10
 
 * Tue Aug 30 2022 dillon chen<dillon.chen@gmail.com> - 3.0.3.32900-10
 - put correct source as /usr/sbin/fb_config
