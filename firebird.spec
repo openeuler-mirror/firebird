@@ -3,7 +3,7 @@
 
 Name:           firebird
 Version:        %{ver}.%{rev}
-Release:        1
+Release:        2
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -205,8 +205,11 @@ systemd-tmpfiles --create  %{_tmpfilesdir}/firebird.conf
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Thu Mar 2 2023 dillon chen <dillon.chen@gmail.com> - 3.0.10.33601-2
+- add -fPIE in honour-buildflags.patch
+
 * Thu Sep 1 2022 Funda Wang <fundawang@yeah.net> - 3.0.10.33601-1
-* New version 3.0.10
+- New version 3.0.10
 
 * Tue Aug 30 2022 dillon chen<dillon.chen@gmail.com> - 3.0.3.32900-10
 - put correct source as /usr/sbin/fb_config
