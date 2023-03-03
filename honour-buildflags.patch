@@ -13,7 +13,7 @@ Author: Damyan Ivanov <dmn@debian.org>
  
  $(INCLUDE_DEST)/ibase.h: $(SRC_IBASE_ExtraFiles)
 -	$(STATICEXE_LINK) -o $(MAKE_HEADER_Bin) $(MAKE_HEADER_Src)
-+	$(STATICEXE_LINK) $(EXE_LINK_OPTIONS) $(LINK_OPTS) $(CPPFLAGS) -o $(MAKE_HEADER_Bin) $(MAKE_HEADER_Src)
++	$(STATICEXE_LINK) $(EXE_LINK_OPTIONS) $(LINK_OPTS) $(CPPFLAGS) -o $(MAKE_HEADER_Bin) -fPIE $(MAKE_HEADER_Src)
  	$(CP) $^ .
  	$(MAKE_HEADER_Bin) <ibase.h >$@
  	$(RM) -f ibase.h
