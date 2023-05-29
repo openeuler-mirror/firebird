@@ -3,7 +3,7 @@
 
 Name:           firebird
 Version:        %{ver}.%{rev}
-Release:        1
+Release:        2
 Summary:        SQL relational database management system
 License:        Interbase
 URL:            http://www.firebirdsql.org/
@@ -24,7 +24,7 @@ Patch0005:      autoconf.patch
 Patch0006:      btyacc-honour-build-flags.patch
 Patch0007:      firebird-configure-c99.patch
 #Patch0008:      0001-Port-to-RISC-V-64-bit-riscv64.patch
-
+Patch0009:      fix_clang.patch
 BuildRequires:  autoconf automake libtommath-devel libtool ncurses-devel libicu-devel
 BuildRequires:  libedit-devel gcc-c++ libstdc++-static systemd-units chrpath zlib-devel procmail
 BuildRequires:  chrpath libtomcrypt-devel sed make unzip
@@ -217,6 +217,9 @@ fi
 %exclude %{_docdir}/firebird/IPLicense.txt
 
 %changelog
+* Mon May 22 2023 Xiang Zhang <zhangxiang@iscas.ac.cn> - 4.0.2.2816-2
+- Fix clang build error
+
 * Thu Mar 2 2023 dillon chen <dillon.chen@gmail.com> - 4.0.2.2816-1
 - Update to 4.0.2 
 

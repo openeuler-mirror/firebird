@@ -1,0 +1,10 @@
+diff -ur Firebird-4.0.2.2816-0/builds/posix/prefix.linux_riscv64 Firebird-4.0.2.2816-0_copy/builds/posix/prefix.linux_riscv64
+--- Firebird-4.0.2.2816-0/builds/posix/prefix.linux_riscv64	2022-08-10 17:04:28.000000000 +0800
++++ Firebird-4.0.2.2816-0_copy/builds/posix/prefix.linux_riscv64	2023-05-22 19:36:52.012481411 +0800
+@@ -24,5 +24,5 @@
+ #PROD_FLAGS=-ggdb -O3 -fno-omit-frame-pointer -DLINUX -pipe -MMD -fPIC
+ #DEV_FLAGS=-ggdb -DLINUX -DDEBUG_GDS_ALLOC -pipe -MMD -p -fPIC -Wall -Wno-switch
+ 
+-PROD_FLAGS=-O3 -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -fsigned-char -fmessage-length=0 -std=gnu++03 -fno-delete-null-pointer-checks
++PROD_FLAGS=-O3 -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -fsigned-char -fmessage-length=0 -fno-delete-null-pointer-checks
+ DEV_FLAGS=-ggdb -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -Wall -fsigned-char -fmessage-length=0 -Wno-non-virtual-dtor
